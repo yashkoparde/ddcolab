@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verilog Code Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+<style>
+  /* ---- Global ---- */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body, html {
+    height: 100%;
+    font-family: 'Orbitron', sans-serif;
+    background: radial-gradient(circle at top, #0d0d0d, #000);
+    color: #00ffcc;
+    overflow: hidden;
+  }
+
+  /* ---- Background effect ---- */
+  body::before {
+    content:'';
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: url('https://images.unsplash.com/photo-1601597118677-544f108f3969?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80') no-repeat center center;
+    background-size: cover;
+    opacity: 0.05;
+    z-index: -2;
+    filter: blur(2px);
+  }
+
+  body::after {
+    content:'';
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: radial-gradient(circle, rgba(0,255,204,0.05) 0%, rgba(0,0,0,0.9) 100%);
+    z-index:-1;
+  }
+
+  /* ---- Container ---- */
+  .container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    gap: 1rem;
+  }
+
+  h1 {
+    font-size: 3rem;
+    text-align: center;
+    text-shadow: 0 0 10px #00ffcc, 0 0 20px #00ffcc;
+    letter-spacing: 2px;
+  }
+
+  .pdf-frame {
+    width: 90%;
+    height: 70vh;
+    border: 2px solid #00ffcc;
+    border-radius: 12px;
+    box-shadow: 0 0 30px #00ffcc55, 0 0 60px #00ffcc33 inset;
+    overflow: hidden;
+    backdrop-filter: blur(5px);
+    position: relative;
+    animation: pulse 3s infinite alternate;
+  }
+
+  iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: #111;
+  }
+
+  @keyframes pulse {
+    0% { box-shadow: 0 0 30px #00ffcc55, 0 0 60px #00ffcc33 inset; }
+    100% { box-shadow: 0 0 50px #00ffccaa, 0 0 100px #00ffcc55 inset; }
+  }
+
+  .btn-download {
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem;
+    border: 1px solid #00ffcc;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #00ffcc;
+    font-weight: bold;
+    text-shadow: 0 0 5px #00ffcc;
+    transition: 0.3s ease;
+  }
+
+  .btn-download:hover {
+    background: #00ffcc10;
+    box-shadow: 0 0 20px #00ffcc, 0 0 40px #00ffcc inset;
+  }
+
+  /* ---- Footer effect ---- */
+  .footer {
+    position: absolute;
+    bottom: 1rem;
+    font-size: 0.8rem;
+    color: #00ffcc55;
+    text-align: center;
+    width: 100%;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Verilog Code Archive</h1>
+
+  <div class="pdf-frame">
+    <iframe src="https://drive.google.com/file/d/1zM5DNRH_41ZF6j6jv0x4U7QHzcNvMwq-/preview"></iframe>
+  </div>
+
+  <a class="btn-download" href="https://drive.google.com/file/d/1zM5DNRH_41ZF6j6jv0x4U7QHzcNvMwq-/view?usp=sharing" target="_blank">Download PDF</a>
+</div>
+
+<div class="footer">Next time STUDY AND COME YHOU LIL PIECE OF SHARBAT</div>
+
+</body>
+</html>
