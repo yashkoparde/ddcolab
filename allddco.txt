@@ -1,0 +1,926 @@
+//4a
+// Design Code
+module halfadder (
+    input  a,
+    input  b,
+    output sum,
+    output carry
+);
+
+    assign sum   = a ^ b;
+    assign carry = a & b;
+
+endmodule
+// Testbench
+module halfadder_tb;
+
+    reg a;
+    reg b;
+    wire sum;
+    wire carry;
+
+    // Instantiate the Half Adder
+    halfadder uut (
+        .a(a),
+        .b(b),
+        .sum(sum),
+        .carry(carry)
+    );
+
+    // Apply test vectors
+    initial begin
+        a = 0; b = 0; #100;
+        a = 0; b = 1; #100;
+        a = 1; b = 0; #100;
+        a = 1; b = 1; #100;
+    end
+
+    // Dump waveform
+    initial begin
+        $dumpfile("halfadder_tb.vcd");
+        $dumpvars(0, uut);
+        #1000 $finish;
+    end
+
+    // Monitor outputs
+    initial begin
+        $monitor("Time=%0t | a=%b | b=%b | sum=%b | carry=%b",
+                  $time, a, b, sum, carry);
+    end
+
+endmodule
+
+//4b
+// Code your design here
+module FA (
+    input  a,
+    input  b,
+    input  c,
+    output sum,
+    output carry
+);
+
+    assign sum   = a ^ b ^ c;
+    assign carry = (a & b) | (b & c) | (c & a);
+
+endmodule
+// Code your testbench here
+module FA_tb;
+
+    reg a;
+    reg b;
+    reg c;
+    wire sum;
+    wire carry;
+
+    // Instantiate the Full Adder
+    FA uut (
+        .a(a),
+        .b(b),
+        .c(c),
+        .sum(sum),
+        .carry(carry)
+    );
+
+    // Apply test vectors
+    initial begin
+        a = 0; b = 0; c = 0; #100;
+        a = 0; b = 0; c = 1; #100;
+        a = 0; b = 1; c = 0; #100;
+        a = 0; b = 1; c = 1; #100;
+        a = 1; b = 0; c = 0; #100;
+        a = 1; b = 0; c = 1; #100;
+        a = 1; b = 1; c = 0; #100;
+        a = 1; b = 1; c = 1; #100;
+    end
+
+    // Dump waveform
+    initial begin
+        $dumpfile("FA_tb.vcd");
+        $dumpvars(0, uut);
+        #1000 $finish;
+    end
+
+    // Monitor outputs
+    initial begin
+        $monitor("Time=%0t | a=%b | b=%b | c=%b | sum=%b | carry=%b",
+                  $time, a, b, c, sum, carry);
+    end
+
+endmodule
+
+//4c
+// Code your design here
+module HS (
+    input  a,
+    input  b,
+    output diff,
+    output borrow
+);
+
+    assign diff   = a ^ b;
+    assign borrow = (~a) & b;
+
+endmodule
+//testbench
+module HS_tb;
+
+    reg a;
+    reg b;
+    wire diff;
+    wire borrow;
+
+    // Instantiate the Half Subtractor
+    HS uut (
+        .a(a),
+        .b(b),
+        .diff(diff),
+        .borrow(borrow)
+    );
+
+    // Apply test vectors
+    initial begin
+        a = 0; b = 0; #100;
+        a = 0; b = 1; #100;
+        a = 1; b = 0; #100;
+        a = 1; b = 1; #100;
+    end
+
+    // Dump waveform
+    initial begin
+        $dumpfile("HS_tb.vcd");
+        $dumpvars(0, uut);
+        #1000 $finish;
+    end
+
+    // Monitor outputs
+    initial begin
+        $monitor("Time=%0t | a=%b | b=%b | diff=%b | borrow=%b",
+                  $time, a, b, diff, borrow);
+    end
+
+endmodule
+
+//4d
+// Design code
+module FS (
+    input  a,
+    input  b,
+    input  c,
+    output diff,
+    output borrow
+);
+
+    assign diff   = a ^ b ^ c;
+    assign borrow = ((~a) & b) | (b & c) | ((~a) & c);
+
+endmodule
+// Testbench for Full Subtractor
+module FS_tb;
+
+    reg a;
+    reg b;
+    reg c;
+    wire diff;
+    wire borrow;
+
+    // Instantiate the Full Subtractor
+    FS uut (
+        .a(a),
+        .b(b),
+        .c(c),
+        .diff(diff),
+        .borrow(borrow)
+    );
+
+    // Apply test vectors
+    initial begin
+        a = 0; b = 0; c = 0; #100;
+        a = 0; b = 0; c = 1; #100;
+        a = 0; b = 1; c = 0; #100;
+        a = 0; b = 1; c = 1; #100;
+        a = 1; b = 0; c = 0; #100;
+        a = 1; b = 0; c = 1; #100;
+        a = 1; b = 1; c = 0; #100;
+        a = 1; b = 1; c = 1; #100;
+    end
+
+    // Dump waveform
+    initial begin
+        $dumpfile("FS_tb.vcd");
+        $dumpvars(0, uut);
+        #1000 $finish;
+    end
+
+    // Monitor outputs
+    initial begin
+        $monitor("Time=%0t | a=%b | b=%b | c=%b | diff=%b | borrow=%b",
+                  $time, a, b, c, diff, borrow);
+    end
+
+endmodule
+
+//5
+// Code your design here
+module bcd_adder (
+    input  [3:0] A,
+    input  [3:0] B,
+    input        Cin,
+    output reg [3:0] Sum,
+    output reg       Cout
+);
+
+    reg [4:0] temp_sum; // 5-bit temporary sum
+
+    always @(A or B or Cin) begin
+        temp_sum = A + B + Cin;   // Binary addition
+
+        if (temp_sum > 9) begin
+            Sum  = temp_sum[3:0] + 4'b0110; // BCD correction
+            Cout = 1'b1;
+        end
+        else begin
+            Sum  = temp_sum[3:0];
+            Cout = 1'b0;
+        end
+    end
+
+endmodule
+
+// Code your testbench here
+module tb_bcd_adder;
+
+    reg  [3:0] A_tb;
+    reg  [3:0] B_tb;
+    reg        Cin_tb;
+    wire [3:0] Sum_tb;
+    wire       Cout_tb;
+
+    // Instantiate the BCD Adder
+    bcd_adder uut (
+        .A(A_tb),
+        .B(B_tb),
+        .Cin(Cin_tb),
+        .Sum(Sum_tb),
+        .Cout(Cout_tb)
+    );
+
+    // Apply test vectors
+    initial begin
+        A_tb = 4'd0; B_tb = 4'd0; Cin_tb = 1'b0; #10;
+
+        // Test Case 1: No carry, no correction
+        A_tb = 4'd3; B_tb = 4'd4; Cin_tb = 1'b0; #10;
+
+        // Test Case 2: Correction required (sum > 9)
+        A_tb = 4'd7; B_tb = 4'd5; Cin_tb = 1'b0; #10;
+
+        // Test Case 3: Carry-in with correction
+        A_tb = 4'd8; B_tb = 4'd9; Cin_tb = 1'b1; #10;
+
+        // Test Case 4: Carry-in, no correction
+        A_tb = 4'd1; B_tb = 4'd2; Cin_tb = 1'b1; #10;
+
+        // Test Case 5: Maximum BCD values
+        A_tb = 4'd9; B_tb = 4'd9; Cin_tb = 1'b0; #10;
+
+        // Test Case 6: Maximum BCD values with carry-in
+        A_tb = 4'd9; B_tb = 4'd9; Cin_tb = 1'b1; #10;
+
+        $finish;
+    end
+
+    // Monitor outputs
+    initial begin
+        $monitor("Time=%0t | A=%d | B=%d | Cin=%b | Sum=%d | Cout=%b",
+                  $time, A_tb, B_tb, Cin_tb, Sum_tb, Cout_tb);
+    end
+
+    // Dump waveform
+    initial begin
+        $dumpfile("tb_bcd_adder.vcd");
+        $dumpvars(0, uut);
+        #1000 $finish;
+    end
+
+endmodule
+
+//6a
+// Code your design here
+module mux_2x1_behavioral (
+    input  I0,    // Data input 0
+    input  I1,    // Data input 1
+    input  S,     // Select input
+    output reg Y  // Output
+);
+
+    always @(*) begin
+        if (S == 1'b0)
+            Y = I0;
+        else
+            Y = I1;
+    end
+
+endmodule
+// Code your testbench here
+module mux_2x1_tb;
+
+    reg  I0_tb;
+    reg  I1_tb;
+    reg  S_tb;
+    wire Y_tb;
+
+    // Instantiate the MUX
+    mux_2x1_behavioral uut (
+        .I0(I0_tb),
+        .I1(I1_tb),
+        .S(S_tb),
+        .Y(Y_tb)
+    );
+
+    // Apply test vectors
+    initial begin
+        // Initialize inputs
+        I0_tb = 1'b0;
+        I1_tb = 1'b1;
+        S_tb  = 1'b0;
+        #10;
+
+        // Select I1
+        S_tb = 1'b1;
+        #10;
+
+        // Change inputs
+        I0_tb = 1'b1;
+        I1_tb = 1'b0;
+        S_tb  = 1'b0;
+        #10;
+
+        // Select I1
+        S_tb = 1'b1;
+        #10;
+
+        $display("Time=%0t | I0=%b | I1=%b | S=%b | Y=%b",
+                  $time, I0_tb, I1_tb, S_tb, Y_tb);
+        $finish;
+    end
+
+    // Monitor outputs
+    initial begin
+        $monitor("Time=%0t | I0=%b | I1=%b | S=%b | Y=%b",
+                  $time, I0_tb, I1_tb, S_tb, Y_tb);
+    end
+
+    // Dump waveform
+    initial begin
+        $dumpfile("mux_2x1_tb.vcd");
+        $dumpvars(0, uut);
+        #1000 $finish;
+    end
+
+endmodule
+
+//6b
+// Code your design here
+module mux_4_1 (
+    input  a,
+    input  b,
+    input  c,
+    input  d,
+    input  s0,
+    input  s1,
+    output reg out
+);
+
+    always @(*) begin
+        case ({s1, s0})
+            2'b00: out = a;
+            2'b01: out = b;
+            2'b10: out = c;
+            2'b11: out = d;
+            default: out = 1'b0;
+        endcase
+    end
+
+endmodule
+// Code your testbench here
+module tb_mux_4_1;
+
+    // Inputs
+    reg I0;
+    reg I1;
+    reg I2;
+    reg I3;
+    reg S0;
+    reg S1;
+
+    // Output
+    wire Y;
+
+    // Instantiate the 4:1 MUX
+    mux_4_1 uut (
+        .a(I0),
+        .b(I1),
+        .c(I2),
+        .d(I3),
+        .s0(S0),
+        .s1(S1),
+        .out(Y)
+    );
+
+    // Apply test vectors
+    initial begin
+        // Initialize inputs
+        I0 = 0; I1 = 0; I2 = 0; I3 = 0;
+        S0 = 0; S1 = 0;
+
+        // Select I0
+        #10;
+        I0 = 1; S0 = 0; S1 = 0;
+
+        // Select I1
+        #10;
+        I1 = 1; S0 = 1; S1 = 0;
+
+        // Select I2
+        #10;
+        I2 = 1; S0 = 0; S1 = 1;
+
+        // Select I3
+        #10;
+        I3 = 1; S0 = 1; S1 = 1;
+
+        // Another test case
+        #10;
+        I0 = 1; I1 = 0; I2 = 1; I3 = 0;
+        S0 = 1; S1 = 0; // Select I1
+
+        #10;
+        $finish;
+    end
+
+    // Monitor outputs
+    initial begin
+        $monitor("Time=%0t | I0=%b I1=%b I2=%b I3=%b | S1=%b S0=%b | Y=%b",
+                  $time, I0, I1, I2, I3, S1, S0, Y);
+    end
+
+    // Dump waveform
+    initial begin
+        $dumpfile("mux_4x1_tb.vcd");   // ✅ corrected filename
+        $dumpvars(0, uut);
+        #1000 $finish;
+    end
+
+endmodule
+
+//6c
+// 8x1 MUX Design using Behavioral Modeling
+module mux_8_1 (
+    output reg y,
+    input [7:0] D, // Data inputs D[0] to D[7]
+    input [2:0] S  // Select lines S[2:0]
+);
+
+    always @(*) begin
+        case (S)
+            3'b000: y = D[0];
+            3'b001: y = D[1];
+            3'b010: y = D[2];
+            3'b011: y = D[3];
+            3'b100: y = D[4];
+            3'b101: y = D[5];
+            3'b110: y = D[6];
+            3'b111: y = D[7];
+            default: y = 1'b0; // Optional default
+        endcase
+    end
+
+endmodule
+// Testbench for 8x1 MUX
+module tb_mux_8_1;
+
+    // Inputs
+    reg [7:0] I_test;
+    reg [2:0] S_test;
+
+    // Output
+    wire y_test;
+
+    // Instantiate the 8x1 MUX
+    mux_8_1 uut (
+        .y(y_test),
+        .D(I_test),
+        .S(S_test)
+    );
+
+    // Stimulus generation
+    initial begin
+        // Initialize inputs
+        I_test = 8'b00000000;
+        S_test = 3'b000;
+        #10;
+
+        // Test case 1: Select input 0
+        I_test = 8'b10101010; S_test = 3'b000; #10;
+
+        // Test case 2: Select input 3
+        S_test = 3'b011; #10;
+
+        // Test case 3: Select input 7
+        I_test = 8'b01010101; S_test = 3'b111; #10;
+
+        // Test case 4: Select input 5
+        I_test = 8'b11001100; S_test = 3'b101; #10;
+
+        $finish;
+    end
+
+    // Monitor signals
+    initial begin
+        $monitor("Time=%0t | I_test=%b | S_test=%b | y=%b",
+                  $time, I_test, S_test, y_test);
+    end
+
+    // Dump waveform
+    initial begin
+        $dumpfile("tb_mux_8_1.vcd");
+        $dumpvars(0, uut);
+        #1000 $finish;
+    end
+
+endmodule
+
+//7a
+// 1-to-2 Demultiplexer
+module demux1x2 (
+    input  wire din,   // Data input
+    input  wire sel,   // Select line
+    output reg y0,     // Output 0
+    output reg y1      // Output 1
+);
+
+    always @(*) begin
+        // Default outputs
+        y0 = 0;
+        y1 = 0;
+
+        // Route input to selected output
+        if (sel == 0)
+            y0 = din;
+        else
+            y1 = din;
+    end
+
+endmodule
+// Testbench for 1-to-2 DEMUX
+module demux1x2_tb;
+
+    // Inputs
+    reg din;
+    reg sel;
+
+    // Outputs
+    wire y0, y1;
+
+    // Instantiate the DEMUX
+    demux1x2 uut (
+        .din(din),
+        .sel(sel),
+        .y0(y0),
+        .y1(y1)
+    );
+
+    // Simulation
+    initial begin
+        $display("Time   din sel | y0 y1");
+        $monitor("%0t     %b   %b   | %b  %b", $time, din, sel, y0, y1);
+
+        // Test case 1: din = 1
+        din = 1;
+        sel = 0; #10;   // y0 = 1
+        sel = 1; #10;   // y1 = 1
+
+        // Test case 2: din = 0
+        din = 0;
+        sel = 0; #10;   // y0 = 0
+        sel = 1; #10;   // y1 = 0
+
+        $finish;
+    end
+
+endmodule
+
+//7b
+// 1-to-4 Demultiplexer
+module demux_1to4 (
+    input  wire din,          // Data input
+    input  wire [1:0] sel,    // 2-bit select lines
+    output reg  y0,           // Output 0
+    output reg  y1,           // Output 1
+    output reg  y2,           // Output 2
+    output reg  y3            // Output 3
+);
+
+    always @(*) begin
+        // Default all outputs to 0
+        y0 = 0;
+        y1 = 0;
+        y2 = 0;
+        y3 = 0;
+
+        // Assign input to selected output
+        case (sel)
+            2'b00: y0 = din;
+            2'b01: y1 = din;
+            2'b10: y2 = din;
+            2'b11: y3 = din;
+        endcase
+    end
+
+endmodule
+// Testbench for 1-to-4 DEMUX
+module tb_demux_1to4;
+
+    // Inputs
+    reg din;
+    reg [1:0] sel;
+
+    // Outputs
+    wire y0, y1, y2, y3;
+
+    // Instantiate the Demux
+    demux_1to4 dut (
+        .din(din),
+        .sel(sel),
+        .y0(y0),
+        .y1(y1),
+        .y2(y2),
+        .y3(y3)
+    );
+
+    // Simulation
+    initial begin
+        $display("Time | din sel | y0 y1 y2 y3");
+        $monitor("%4t |  %b   %b |  %b  %b  %b  %b",
+                  $time, din, sel, y0, y1, y2, y3);
+
+        // Test all select lines with din = 1
+        din = 1;
+        sel = 2'b00; #10;
+        sel = 2'b01; #10;
+        sel = 2'b10; #10;
+        sel = 2'b11; #10;
+
+        // Test all select lines with din = 0
+        din = 0;
+        sel = 2'b00; #10;
+        sel = 2'b01; #10;
+        sel = 2'b10; #10;
+        sel = 2'b11; #10;
+
+        $finish;
+    end
+
+    // Optional: Dump waveform
+    initial begin
+        $dumpfile("tb_demux_1to4.vcd");
+        $dumpvars(0, dut);
+    end
+
+endmodule
+
+//7c
+//1-to-8 Demultiplexer
+//design
+module demux1x8 (
+    input  wire din,        // Data input
+    input  wire [2:0] sel,  // 3-bit select lines
+    output reg y0, y1, y2, y3, y4, y5, y6, y7 // Outputs
+);
+
+    always @(*) begin
+        // Default all outputs to 0
+        y0 = 0; y1 = 0; y2 = 0; y3 = 0;
+        y4 = 0; y5 = 0; y6 = 0; y7 = 0;
+
+        // Assign input to selected output
+        case(sel)
+            3'b000: y0 = din;
+            3'b001: y1 = din;
+            3'b010: y2 = din;
+            3'b011: y3 = din;
+            3'b100: y4 = din;
+            3'b101: y5 = din;
+            3'b110: y6 = din;
+            3'b111: y7 = din;
+        endcase
+    end
+
+endmodule
+//testbench
+// Testbench for 1-to-8 DEMUX
+module demux1x8_tb;
+
+    // Inputs
+    reg din;
+    reg [2:0] sel;
+
+    // Outputs
+    wire y0, y1, y2, y3, y4, y5, y6, y7;
+
+    // Instantiate DEMUX
+    demux1x8 uut (
+        .din(din),
+        .sel(sel),
+        .y0(y0), .y1(y1), .y2(y2), .y3(y3),
+        .y4(y4), .y5(y5), .y6(y6), .y7(y7)
+    );
+
+    // Simulation
+    initial begin
+        $display("Time  din sel | y0 y1 y2 y3 y4 y5 y6 y7");
+        $monitor("%0t   %b   %b | %b  %b  %b  %b  %b  %b  %b  %b",
+                  $time, din, sel, y0,y1,y2,y3,y4,y5,y6,y7);
+
+        // Test all select lines with din = 1
+        din = 1;
+        sel = 3'b000; #10;
+        sel = 3'b001; #10;
+        sel = 3'b010; #10;
+        sel = 3'b011; #10;
+        sel = 3'b100; #10;
+        sel = 3'b101; #10;
+        sel = 3'b110; #10;
+        sel = 3'b111; #10;
+
+        // Test all select lines with din = 0
+        din = 0;
+        sel = 3'b000; #10;
+        sel = 3'b001; #10;
+        sel = 3'b010; #10;
+        sel = 3'b011; #10;
+        sel = 3'b100; #10;
+        sel = 3'b101; #10;
+        sel = 3'b110; #10;
+        sel = 3'b111; #10;
+
+        $finish;
+    end
+
+endmodule
+
+//8a
+// SR Flip-Flop Design
+module SR_FF (
+    input S,          // Set input
+    input R,          // Reset input
+    input clk,        // Clock input
+    output reg Q      // Output
+);
+
+    always @(posedge clk) begin
+        case ({S, R})
+            2'b10: Q <= 1;    // Set
+            2'b01: Q <= 0;    // Reset
+            2'b00: Q <= Q;    // Hold previous state
+            2'b11: Q <= 1'bx; // Invalid (undefined)
+        endcase
+    end
+
+endmodule
+// Testbench for SR Flip-Flop
+module TB_SR_FF();
+    // Inputs
+    reg S, R, clk;
+
+    // Output
+    wire Q;
+
+    // Instantiate the SR Flip-Flop
+    SR_FF uut (
+        .S(S),
+        .R(R),
+        .clk(clk),
+        .Q(Q)
+    );
+
+    // Clock generation: 10-time-unit period
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    // Stimulus and monitoring
+    initial begin
+        $monitor("Time=%0t | S=%b R=%b Q=%b", $time, S, R, Q);
+
+        // Test sequence
+        S = 0; R = 0; #10;  // Hold
+        S = 1; R = 0; #10;  // Set
+        S = 0; R = 1; #10;  // Reset
+        S = 0; R = 0; #10;  // Hold
+        S = 1; R = 1; #10;  // Invalid
+
+        $stop; // Stop simulation
+    end
+endmodule
+
+//8b
+// JK Flip-Flop (Clocked) Design
+module JK_FF (
+    input J,         
+    input K,          
+    input clk,       
+    output reg Q      
+);
+
+    always @(posedge clk) begin
+        case ({J, K})
+            2'b00: Q <= Q;     
+            2'b01: Q <= 0;     
+            2'b10: Q <= 1;     
+            2'b11: Q <= ~Q;    
+        endcase
+    end
+
+endmodule
+// Testbench for JK Flip-Flop
+module TB_JK_FF();
+    reg J, K, clk;
+    wire Q;
+    JK_FF uut (
+        .J(J),
+        .K(K),
+        .clk(clk),
+        .Q(Q)
+    );
+
+    // Clock generation: 10-time-unit period
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk;
+    end
+
+    // Stimulus and monitoring
+    initial begin
+        $monitor("Time=%0t | J=%b K=%b Q=%b", $time, J, K, Q);
+
+        // Test sequence
+        J = 0; K = 0; #10;  // Hold
+        J = 1; K = 0; #10;  // Set
+        J = 0; K = 1; #10;  // Reset
+        J = 1; K = 1; #10;  // Toggle
+        J = 1; K = 1; #10;  // Toggle again
+
+        $stop; // Stop simulation
+    end
+endmodule
+
+//8c
+// D Flip-Flop (Clocked) Design
+module D_FF (
+    input D,         
+    input clk,        
+    output reg Q     
+);
+
+    always @(posedge clk) begin
+        Q <= D;      
+    end
+
+endmodule
+// Testbench for D Flip-Flop
+module TB_D_FF();
+    // Inputs
+    reg D, clk;
+
+    // Output
+    wire Q;
+
+    // Instantiate D Flip-Flop
+    D_FF uut (
+        .D(D),
+        .clk(clk),
+        .Q(Q)
+    );
+
+    // Clock generation: 10-time-unit period
+    initial begin
+        clk = 0;
+        forever #5 clk = ~clk; // Toggle clock every 5 time units
+    end
+
+    // Stimulus and monitoring
+    initial begin
+        $monitor("Time=%0t | D=%b Q=%b", $time, D, Q);
+
+        // Test sequence
+        D = 0; #10;   // Q should be 0 on next rising edge
+        D = 1; #10;   // Q should be 1
+        D = 0; #10;   // Q should be 0
+        D = 1; #10;   // Q should be 1
+
+        #1000 $stop;  // Stop simulation
+    end
+endmodule
